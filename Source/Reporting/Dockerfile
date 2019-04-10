@@ -25,7 +25,7 @@ COPY ./Source/Reporting /CBS/Source/Reporting
 WORKDIR /CBS/Source/Reporting/Core
 RUN dotnet publish --no-restore -c Release -o out
 
-FROM node:11.6-slim AS build-web
+FROM node:11.6-alpine AS build-web
 ARG mode=build-test
 
 # Install dependencies
@@ -44,8 +44,6 @@ FROM microsoft/dotnet:2.2-aspnetcore-runtime-bionic
 COPY ./Source/Reporting/bounded-context.json /CBS/bounded-context.json
 COPY --from=build-core /CBS/Source/Reporting/Core/out /CBS/Core/
 COPY --from=build-core /CBS/Source/Reporting/Core/.dolittle /CBS/Core/.dolittle
-# Build runtime image for frontend
-FROM nginx:1.15-alpine
 COPY --from=build-web /CBS/Source/Reporting/Web/dist /CBS/Core/wwwroot
 WORKDIR /CBS/Core
 ENTRYPOINT ["dotnet", "/CBS/Core/Core.dll"]
