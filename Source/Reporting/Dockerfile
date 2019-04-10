@@ -39,11 +39,13 @@ COPY ./Source/Reporting/Web /CBS/Source/Reporting/Web
 WORKDIR /CBS/Source/Reporting/Web
 RUN npm run ${mode}
 
-# Build runtime image
+# Build runtime image for backend
 FROM microsoft/dotnet:2.2-aspnetcore-runtime-bionic
 COPY ./Source/Reporting/bounded-context.json /CBS/bounded-context.json
 COPY --from=build-core /CBS/Source/Reporting/Core/out /CBS/Core/
 COPY --from=build-core /CBS/Source/Reporting/Core/.dolittle /CBS/Core/.dolittle
+# Build runtime image for frontend
+FROM nginx:1.15-alpine
 COPY --from=build-web /CBS/Source/Reporting/Web/dist /CBS/Core/wwwroot
 WORKDIR /CBS/Core
 ENTRYPOINT ["dotnet", "/CBS/Core/Core.dll"]
