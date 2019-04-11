@@ -25,7 +25,7 @@ COPY ./Source/Reporting /CBS/Source/Reporting
 WORKDIR /CBS/Source/Reporting/Core
 RUN dotnet publish --no-restore -c Release -o out
 
-FROM node:11.6-alpine AS build-web
+FROM node:11.6-slim AS build-web
 ARG mode=build-test
 
 # Install dependencies
